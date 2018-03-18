@@ -68,6 +68,10 @@ class GraphiteUrlBuilder(object):
         ret_val = self._uriParamSeparator.join(ret_val)
         return ret_val
 
+    def reset_dimensions(self):
+        self._dimension = []
+        return self
+
     @property
     def tz(self) -> str:
         return None if self._tz is None else "tz=%s" % self._tz

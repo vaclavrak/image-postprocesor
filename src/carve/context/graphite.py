@@ -44,7 +44,7 @@ class graphite(BaseContext):
         url = self.config.get_kv("{}/url".format(self.m))
         starttime = self.config.get_kv("{}/starttime".format(self.m))
         endtime = self.config.get_kv("{}/endtime".format(self.m)).format(**self.config.context)
-        self.cleanup()
+        self.url_builder.reset_dimensions()
         self.url_builder.set_url_prefix(url)
         self.url_builder.set_start_time(starttime)
         self.url_builder.set_end_time(endtime)
