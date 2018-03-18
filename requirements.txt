@@ -7,3 +7,4 @@ django-celery==3.2.2
 kombu==3.0.37
 pytz==2018.3
 vine==1.1.4
+redis
