@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ "$(docker ps -f name=redis_postprocess -q -f status=exited | wc -l)" != "0" ]]; then
- docker rm -f redis_phoner
+ docker rm -f redis_postprocess
 fi
 
 

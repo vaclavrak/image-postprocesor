@@ -5,7 +5,7 @@ import time
 from io import BytesIO
 from PIL import Image
 from carve.machinery.BaseImage import BaseImage
-
+from time import sleep
 
 class ReadRmqMessagesException(Exception):
     pass
@@ -107,18 +107,21 @@ class ReadRmqMessages(object):
             self.ch.basic_qos(prefetch_count=1)
             self.ch.basic_consume(callback, queue=self.q, no_ack=False)
             self.ch.start_consuming()
-        except Exception as e:
-            print(e)
+        except pika.exceptions.AMQPError as e:
+            logger.error(e)
+            sleep(1)
 
 
 class rabbitmq(BaseSource):
     _rrm = None
     start_time = None
+    _closing_time = False
 
     def __init__(self):
         super(rabbitmq, self).__init__()
         self._rrm = None
         self.start_time = None
+        self._closing_time = False
 
     @property
     def cacert(self):
@@ -217,7 +220,7 @@ class rabbitmq(BaseSource):
 
     def start(self):
         self.start_time = time.time()
-
+        self._closing_time = False
         # print(self._config._yml)
         params = urllib.parse.urlencode({
             'ssl_options': {'ca_certs':self.cacert, 'certfile': self.cert, 'keyfile': self.key, },
@@ -226,17 +229,22 @@ class rabbitmq(BaseSource):
         })
         uri = self.uri + "?" + params
         logger.debug(uri)
-        self._rrm = ReadRmqMessages().connect(uri)
-        self._rrm.exchange(self.exchange)
-        self._rrm.routing_key(self.routing_key)
-        self._rrm.queue(self.queue)
-        if self.ttl:
-            self._rrm.ttl(self.ttl)
-        self._rrm.consume(self.process_message)
+        while self._closing_time is False:
+            try:
+                self._rrm = ReadRmqMessages().connect(uri)
+                self._rrm.exchange(self.exchange)
+                self._rrm.routing_key(self.routing_key)
+                self._rrm.queue(self.queue)
+                if self.ttl:
+                    self._rrm.ttl(self.ttl)
+                self._rrm.consume(self.process_message)
+            except pika.exceptions.AMQPError  as e:
+                logger.error(e)
+                sleep(30)
         return self
 
     def stop(self):
-
+        self._closing_time = True
         if not self.is_closed:
             if self._rrm:
                 self._rrm.ch.stop_consuming()
