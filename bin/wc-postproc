@@ -1,0 +1,8 @@
+#!/bin/sh
+
+. /var/lib/webcam/postproces/venv/bin/activate 
+
+cd /var/lib/webcam/postproces/src
+
+
+python manage.py start_daemon
