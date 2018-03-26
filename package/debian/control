@@ -1,0 +1,15 @@
+Source: image-postprocesor
+Section: graphics
+Priority: optional
+Maintainer: Vaclav Rak <rak@webwye.services>
+Build-Depends: debhelper (>=9),dh-python,dh-systemd
+Standards-Version: 3.9.6
+Homepage: http://webeye.services/
+#Vcs-Git: git://anonscm.debian.org/collab-maint/image-postprocesor.git
+#Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/image-postprocesor.git
+
+Package: image-postprocesor
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends},python3 (>=3.1),python3-pip
+Description: image post processor 
+ <insert long description, indented with spaces>

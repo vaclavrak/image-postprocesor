@@ -1,0 +1,11 @@
+[Unit]
+Description=WebEye services Image Carving (postprocess)
+Documentation=https://webeye.services
+
+[Service]
+Type=notify
+ExecStart=/var/lib/webcam/postproces/wc-postproc
+Restart=on-failure
+StartLimitBurst=3
+StartLimitInterval=60s
+
