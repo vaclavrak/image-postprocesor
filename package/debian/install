@@ -1,4 +1,4 @@
 src/ var/lib/webcam/postproces
 package/bin/ var/lib/webcam/postproces
-debian/wc-carved.service /lib/systemd/system/wc-carved.service
+debian/wc-carved.service /lib/systemd/system/
 requirements.txt var/lib/webcam/postproces
