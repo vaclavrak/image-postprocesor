@@ -28,6 +28,8 @@ configure()
 	pip3 install -r requirements.txt
 	chmod +x /var/lib/webcam/postproces/bin/wc-postproc
 	ln -sf /var/lib/webcam/postproces/bin/wc-postproc /usr/local/bin/wc-postproc
+	systemctl daemon-reload
+	systemctl enable wc-carved.service
 }
 
 

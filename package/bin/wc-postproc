@@ -1,8 +1,42 @@
-#!/bin/sh
+#!/usr/bin/env bash
+#
+# basic carver, this run the daemon
+#
+# created by Vena <rak@webeye.services>
+# date 03/2018
+# web https://webeye.services
+#
 
-. /var/lib/webcam/postproces/venv/bin/activate 
+run_daemon(){
+  . /var/lib/webcam/postproces/venv/bin/activate
+  cd /var/lib/webcam/postproces/src
+  python manage.py start_daemon
+}
 
-cd /var/lib/webcam/postproces/src
+show_help(){
+  cat <<EOF
+Webeye.Services Carver
+======================
 
+systemd application what have only one purpose, continually process incoming images
 
-python manage.py start_daemon
+Parameters:
+ $0 help:           show this help screen
+ $0 logs:           view logs in follow mode
+ $0 run-daemon:     run daemon in systemd
+ $0 status:         show systemd status
+EOF
+
+}
+
+if [ -z "$*" ] ; then
+    show_help
+fi
+
+case "$1" in
+    logs) journalctl -u wc-carved.service -n -f;;
+    status) systemctl status wc-carved.service ;;
+    run-daemon) run_daemon;;
+    help) show_help;;
+    *) echo 'unknown parameters' ;;
+esac
