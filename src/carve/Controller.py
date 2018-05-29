@@ -104,8 +104,13 @@ class Configurator(object):
             if self._src is None:
                 raise ConfiguratorException("No config file defined, call read(f_name) first.")
 
-            with open(self._src, "r") as f:
-                self._yml = yaml.load(f)
+            try:
+                with open(self._src, "r") as f:
+                    self._yml = yaml.safe_load(f)
+            except yaml.YAMLError as e:
+                logger.error("Parsing YAML string failed.  Reason: {0} At position: {1} with encoding {2} Invalid " 
+                             "char code: {3}".format( e.reason, e.position, e.encoding, e.character))
+
             if self._wt is None:
                 self._wt = threading.Thread(target=self.watch_config_change)
                 self._wt.start()
