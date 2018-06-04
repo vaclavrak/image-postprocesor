@@ -1,0 +1,36 @@
+---
+#
+# setup postprocess for all
+#
+
+- name: install image-postprocesor
+  apt:
+    name={{ item }}
+    state=latest
+    update_cache=yes
+  with_items:
+    - image-postprocesor
+  become: yes
+  become_user: root
+
+
+- name: install redis
+  apt:
+    name={{ item }}
+    state=present
+    force=yes
+  with_items:
+    - redis-server
+  become: yes
+  become_user: root
+
+
+- name: rsync certs
+  synchronize:
+    src="files/tls"
+    dest="/etc/webcam/"
+
+- name: rsync fonts
+  synchronize:
+    src="files/fonts"
+    dest="/etc/webcam/"

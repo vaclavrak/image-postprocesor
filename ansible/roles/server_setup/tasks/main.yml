@@ -1,0 +1,66 @@
+---
+#
+#
+#- name: set hostname
+#  hostname:
+#      name: "{{ inventory_hostname }}"
+#  become: yes
+#  become_user: root
+
+
+- name: set /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^127\.0\.0\.1 {{ inventory_hostname }}$'
+    line: '127.0.0.1 {{ inventory_hostname }}'
+  become: yes
+  become_user: root
+
+
+- name: Change root password
+  user:
+    name=pi
+    update_password=always
+    password='$6$rounds=656000$9KxgI/HoU1Ju.zW9$nbgLCdz.2XnHlUdueOGV.BmEgpaRJk3W3xqyKLZ5ZxJ5MerY7Yh/x2b.VeUXkkNSxSGb7VVVcc9E4Ik0pTFOj1'
+  become: yes
+  become_user: root
+
+
+- name: install openvpn vim tmux gpg
+  apt:
+    name={{ item }}
+    state=present
+  with_items:
+    - vim
+    - openvpn
+    - tmux
+    - rsync
+#    - gpg
+  become: yes
+  become_user: root
+
+
+
+- name: set prompt with alias
+  lineinfile:
+    dest: /root/.bashrc
+    regexp: '^export PS1='
+    line: 'export PS1="[\u@\h {{ALIAS}} \w]\\$ "'
+  when: ALIAS is defined
+  become: yes
+  become_user: root
+
+- name: Add an Apt signing key, uses whichever key is at the URL
+  apt_key:
+    url: http://apt.webeye.services/key.pub
+    state: present
+  become: yes
+  become_user: root
+
+- name: add webeye repo
+  apt_repository:
+    repo: deb http://apt.webeye.services/{{ ansible_distribution|lower }} stable main
+    state: present
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  become: yes
+  become_user: root

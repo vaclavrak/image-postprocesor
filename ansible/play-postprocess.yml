@@ -1,0 +1,4 @@
+
+- hosts: postprocess
+  roles:
+    - { role: postrocess }

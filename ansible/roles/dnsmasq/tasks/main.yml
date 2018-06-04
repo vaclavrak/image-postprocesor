@@ -1,0 +1,19 @@
+---
+
+- name: install dnsmasq
+  apt:
+    name={{ item }}
+    state=latest
+    update_cache=yes
+  with_items:
+    - dnsmasq
+  become: yes
+  become_user: root
+
+
+- template:
+    src: dns.conf.j2
+    dest: /etc/dnsmasq.d/dns.conf
+    owner: root
+    mode: "u=rw,g=r,o=r"
+  notify: restart dnsmasq

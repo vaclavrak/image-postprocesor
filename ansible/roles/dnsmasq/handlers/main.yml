@@ -1,0 +1,10 @@
+---
+#
+# handle DNSMasq events
+#
+
+
+- name: restart dnsmasq
+  service:
+    name: dnsmasq
+    state: reloaded

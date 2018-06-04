@@ -1,0 +1,8 @@
+[a005vf]
+a005vf.vena.cz ansible_connection=ssh  ansible_host=37.205.12.52 ansible_user=root
+
+[all_hosts:children]
+a005vf
+
+[postprocess:children]
+a005vf
