@@ -105,7 +105,7 @@ class Configurator(object):
                 raise ConfiguratorException("No config file defined, call read(f_name) first.")
 
             try:
-                with open(self._src, "r") as f:
+                with open(self._src, "rb") as f:
                     self._yml = yaml.safe_load(f)
             except yaml.YAMLError as e:
                 logger.error("Parsing YAML string failed.  Reason: {0} At position: {1} with encoding {2} Invalid " 
